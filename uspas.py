@@ -20,6 +20,9 @@ head = """
 <!DOCTYPE html>
 <html>
 <head>
+	<title>Leaflet.draw vector editing handlers</title>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+
 """
 
 fin = """

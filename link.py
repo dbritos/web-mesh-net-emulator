@@ -10,6 +10,7 @@ import string
 import cgitb
 cgitb.enable()
 def get_next(numero):
+    numero.sort()
     if numero == []: return  1
     else:
         next_numero = len(numero)
@@ -25,13 +26,13 @@ db = mysql.connector.connect(user='root',password='dgi', database='mesh')
 cursor = db.cursor()
 form = cgi.FieldStorage()
 print("Content-type: text/html")
+
 head = """
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Leaflet.draw vector editing handlers</title>
 	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-	<meta content="utf-8" http-equiv="encoding">
 	<script src="/libs/leaflet-src.js"></script>
 	<link rel="stylesheet" href="/libs/leaflet.css" />
 
@@ -163,7 +164,7 @@ if 'sid' in form:
 	print(body)
 	print("map = new L.Map('map', {layers: [osm], center: new L.LatLng(" + str(c1) + "," + str(c2) + "), zoom: " + str(z) + "}),drawnItems = L.featureGroup().addTo(map);")
 	print(medio)
-	print("			document.location = 'http://netemulator.ddns.net/cgi-bin/link.py?type=' + eltype + '&sid=" + str(prop) +
+	print("			document.location = 'link.py?type=' + eltype + '&sid=" + str(prop) +
 						"&point=' + lat + '&banda=' + band + '&center=' + map.getCenter() + '&zoom=' + map.getZoom();")
 	print("			drawnItems.addLayer(layer);")
 	print("		});")	
@@ -171,9 +172,10 @@ else:
 	print("<body>")
 	print("<p><font color='red'>You need to login first to acced to this page</font></p>")
 
+
 if 'point' in form and 'sid' in form:
 	if form['type'].value == 'polyline':
-		o1,o2,d1,d2 = (form['point'].value).split(',')
+		o1,o2,d1,d2 = (form['point'].value).split(',')[:4]
 		o= o1 + ',' + o2
 		d= d1 + ',' + d2
 		olati,olongi = o[7:].rstrip(')').split(',')
@@ -336,7 +338,7 @@ if 'sid' in form:
 		print("		var poly = event.target;")
 		print("		var lat = poly.getLatLngs();")
 		print("		console.log('Polyline was edited!' + eltype + lat);")
-		print("		document.location = 'http://netemulator.ddns.net/cgi-bin/link.py?type=' + eltype + '&sid=" + str(prop) +
+		print("		document.location = 'link.py?type=' + eltype + '&sid=" + str(prop) +
 					"&point=' + lat + '&banda=' + band + '&center=' + map.getCenter() + '&zoom=' + map.getZoom();")
 		print("});")
 	cursor.execute ("select point, name, ip, numeroenlaces from nodo where propietario='%s'" %(prop))
@@ -360,6 +362,7 @@ if 'sid' in form:
 	print("<form action='uspas.py' method='post'>")
 	print("<button type='submit'>Return to login</button>")
 	print("</form>")
+print("<p><font color='red'>" + str(numero) + "</font></p>")
 print(fin)
 cursor.close()
 db.close()
